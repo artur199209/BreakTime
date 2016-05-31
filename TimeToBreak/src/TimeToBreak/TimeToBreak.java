@@ -45,6 +45,7 @@ public class TimeToBreak {
     public static void initialize()
     {
         frame = new JFrame();
+        frame.setResizable(false);
         panel = new JPanel();
         panel.setPreferredSize(new Dimension(140, 100));
         frame.setLayout(new BorderLayout());
@@ -61,18 +62,18 @@ public class TimeToBreak {
         frame.setVisible(true);
     }
     
-    static int czas = 3600;
-    static int i = 0;
+    static int timetobreak = 3600;
+    
     final static SystemTray systemTray = SystemTray.getSystemTray();
     
     static void setTrayIcon()
     {
         Dimension size = systemTray.getTrayIconSize();
-        BufferedImage bi = new BufferedImage(size.width, size.height, BufferedImage.TYPE_INT_RGB);
-        Graphics g = bi.getGraphics();
+        BufferedImage bufferedimage = new BufferedImage(size.width, size.height, BufferedImage.TYPE_INT_RGB);
+        Graphics graphics = bufferedimage.getGraphics();
 
-        g.setColor(Color.blue);
-        g.fillRect(0, 0, size.width, size.height);
+        graphics.setColor(Color.blue);
+        graphics.fillRect(0, 0, size.width, size.height);
         PopupMenu popup = new PopupMenu();
         MenuItem miExit = new MenuItem("Exit");
         miExit.addActionListener(new ActionListener() {
@@ -82,22 +83,22 @@ public class TimeToBreak {
             }
         });
         popup.add(miExit);
-        trayIcon = new TrayIcon(bi, czas+"", popup);
+        trayIcon = new TrayIcon(bufferedimage, timetobreak+"", popup);
     }
     
     static void addMethodToTrayIcon()
     {
             if (SystemTray.isSupported()) {
            
-            MouseMotionListener mi = new MouseMotionListener() {
+            MouseMotionListener mousemotionlistener = new MouseMotionListener() {
                 @Override
                 public void mouseDragged(MouseEvent e) {
                   }
 
                 @Override
                 public void mouseMoved(MouseEvent e) {
-                  int minutes = czas/60;
-                  int seconds = czas%60;
+                  int minutes = timetobreak/60;
+                  int seconds = timetobreak%60;
                   String time = minutes + " minut " + seconds + " sekund";
                   trayIcon.displayMessage("Time", time, TrayIcon.MessageType.INFO);   
                 }
@@ -111,7 +112,7 @@ public class TimeToBreak {
                 }
             };
             
-            trayIcon.addMouseMotionListener(mi);
+            trayIcon.addMouseMotionListener(mousemotionlistener);
             trayIcon.addMouseListener(md);
             trayIcon.setImageAutoSize(true);
           }
@@ -127,14 +128,14 @@ public class TimeToBreak {
                 timer.scheduleAtFixedRate(new TimerTask() {
                 @Override
                 public void run() {
-                int min = czas/60;
-                int sek = czas%60;
-                jlabel.setText("Min: " + min + " sek: " + sek + "");
-                czas = czas - 1;
-                if(czas == 0)
+                int min = timetobreak/60;
+                int sec = timetobreak%60;
+                jlabel.setText("Min: " + min + " sek: " + sec + "");
+                timetobreak = timetobreak - 1;
+                if(timetobreak == 0)
                 {
                     JOptionPane.showMessageDialog(null, "Czas na przerwę.");
-                    czas = 65*60;
+                    timetobreak = 65*60;
                 }}
               }, 1, 1000);
             }
